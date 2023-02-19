@@ -47,10 +47,10 @@ df_all_results = pd.DataFrame(columns=["Title", "Price", "Character", "URL"])
 for result in web_page:
     title = result.find("span", {"class": "a-size-base-plus a-color-base a-text-normal"})
     price = result.find("span", {"class": "a-offscreen"})
-    character_match = result.find("span", text = re.compile(character, re.IGNORECASE))   
+    #character_match = result.find("span", text = re.compile(character, re.IGNORECASE))   
     url = result.find("a", {"class", "a-link-normal s-no-outline"})
-    if title and price:
-        row = [title.text, price.text, character_match, "https://amazon.com/" + url['href']]
+    if title and price and character:
+        row = [title.text, price.text, character, "https://amazon.com/" + url['href']]
     result_list.append(row)
 
 df = pd.DataFrame.from_records(result_list, columns=["Title", "Price", "Character", "URL"])
@@ -60,9 +60,7 @@ df_all_results = pd.concat([df_all_results, df])
 wd.quit()
 
 print(df_all_results)
-
 df.to_csv("marvel_cards.csv", index=False)
-
 df_all_results.to_excel("marvel_cards.xlsx")
 
 
@@ -71,6 +69,6 @@ df_all_results.to_excel("marvel_cards.xlsx")
 # pip install importlib_metadata
 # pip install chromedriver-py==110.0.5481.77
 # pip install selenium
-# uninstall chromedriver, "brew uninstall --cask chromedriver"
+# uninstall chromedriver from mac, "brew uninstall --cask chromedriver"
 # pip install beautifulsoup4
 # Marvel Masterpieces
