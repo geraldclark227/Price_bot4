@@ -42,26 +42,27 @@ web_page = soup.findAll("div",{"data-component-type": "s-search-result"})
 
 result_list=[]
 
-df_all_results = pd.DataFrame(columns=["Title", "Price", "Character", "URL"])
+#df_all_results = pd.DataFrame(columns=["Title", "Price", "Character", "URL"])
 
 for result in web_page:
     title = result.find("span", {"class": "a-size-base-plus a-color-base a-text-normal"})
     price = result.find("span", {"class": "a-offscreen"})
     #character_match = result.find("span", text = re.compile(character, re.IGNORECASE))   
     url = result.find("a", {"class", "a-link-normal s-no-outline"})
-    if title and price and character:
+    if title and price and character and url:
         row = [title.text, price.text, character, "https://amazon.com/" + url['href']]
     result_list.append(row)
 
-df = pd.DataFrame.from_records(result_list, columns=["Title", "Price", "Character", "URL"])
-df_all_results = pd.concat([df_all_results, df])
+df_all_results = pd.DataFrame.from_records(result_list, columns=["Title", "Price", "Character", "URL"])
+#df_all_results = pd.concat([df_all_results, df])
+df_filtered = df_all_results[~df_all_results["Title"].str.contains("Set|Complete|Gift|Box|Comic|Action Figure|T-Shirt", re.IGNORECASE)] & df_all_results[df_all_results.duplicated(keep=False)]
 
 # Close the web driver
 wd.quit()
 
-print(df_all_results)
-df.to_csv("marvel_cards.csv", index=False)
-df_all_results.to_excel("marvel_cards.xlsx")
+print(df_filtered)
+df_filtered.to_csv("marvel_cards.csv", index=False)
+df_filtered.to_excel("marvel_cards.xlsx")
 
 
 # You must install-->
