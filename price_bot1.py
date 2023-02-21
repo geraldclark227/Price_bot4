@@ -10,12 +10,12 @@ wd = wd.Chrome()
 wd.get("http://www.amazon.com")
 
 #locality for order
-wd.find_element(By.ID,"nav-global-location-popover-link").click()
-postcode_field = wd.find_element(By.ID,"GLUXZipUpdateInput")
-postcode_field.send_keys("91423")
-wd.find_element(By.ID,"GLUXZipUpdate").click() 
-close_element = wd.find_element(By.CSS_SELECTOR, "button.a-button-text")
-close_element.click()
+#wd.find_element(By.ID,"nav-global-location-popover-link").click()
+#postcode_field = wd.find_element(By.ID,"GLUXZipUpdateInput")
+#postcode_field.send_keys("91423")
+#wd.find_element(By.ID,"GLUXZipUpdate").click() 
+#close_element = wd.find_element(By.CSS_SELECTOR, "button.a-button-text")
+#close_element.click()
 wd.implicitly_wait(10)
 
 year = input("enter year: ")
@@ -40,29 +40,28 @@ from bs4 import BeautifulSoup
 soup = BeautifulSoup(wd.page_source, 'html.parser')
 web_page = soup.findAll("div",{"data-component-type": "s-search-result"})
 
+row = ""
 result_list=[]
 
 #df_all_results = pd.DataFrame(columns=["Title", "Price", "Character", "URL"])
 
 for result in web_page:
     title = result.find("span", {"class": "a-size-base-plus a-color-base a-text-normal"})
-    price = result.find("span", {"class": "a-offscreen"})
-    #character_match = result.find("span", text = re.compile(character, re.IGNORECASE))   
+    price = result.find("span", {"class": "a-offscreen"}) 
     url = result.find("a", {"class", "a-link-normal s-no-outline"})
-    if title and price and character and url:
-        row = [title.text, price.text, character, "https://amazon.com/" + url['href']]
+    if title and price and url:
+        row = [ title.text, price.text, "https://amazon.com/" + url['href']]
     result_list.append(row)
 
-df_all_results = pd.DataFrame.from_records(result_list, columns=["Title", "Price", "Character", "URL"])
-#df_all_results = pd.concat([df_all_results, df])
-df_filtered = df_all_results[~df_all_results["Title"].str.contains("Set|Complete|Gift|Box|Comic|Action Figure|T-Shirt", re.IGNORECASE)] & df_all_results[df_all_results.duplicated(keep=False)]
+df_all_results = pd.DataFrame.from_records(result_list, columns=["Title", "Price", "URL"])
+df_filtered = df_all_results.drop_duplicates(keep="first")
+df_filtered2 = df_filtered[~df_filtered["Title"].str.contains("Set|Complete|Gift|Box|Comic Book|Comic|Pack|Action Figure|Figure|T-Shirt|Lego", re.IGNORECASE)]
 
-# Close the web driver
 wd.quit()
 
-print(df_filtered)
-df_filtered.to_csv("marvel_cards.csv", index=False)
-df_filtered.to_excel("marvel_cards.xlsx")
+print(df_filtered2)
+df_filtered2.to_csv("marvel_cards.csv", index=False)
+df_filtered2.to_excel("marvel_cards.xlsx")
 
 
 # You must install-->
