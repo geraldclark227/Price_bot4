@@ -5,7 +5,8 @@ from bs4 import BeautifulSoup
 from selenium import webdriver as wd
 from selenium.webdriver.common.by import By
 import webbrowser
-
+import os
+import webbrowser
 
 def search_cards():
     year = year_entry.get()
@@ -23,7 +24,6 @@ def search_cards():
     df_combined = pd.concat([df_amazon, df_ebay], ignore_index=True)
 
     display_results(df_combined)
-
 
 def search_amazon(driver, year, card_set, character):
     driver.get("http://www.amazon.com")
@@ -49,6 +49,7 @@ def search_amazon(driver, year, card_set, character):
                    price.text.replace("$", "").replace(",", ""),
                    "https://amazon.com/" + url['href']]
         result_list_1.append(row)
+
 
     # Dataframe Amazon
     df_a = pd.DataFrame.from_records(result_list_1, columns=["Title", "Price", "URL"])
@@ -102,56 +103,31 @@ def search_ebay(driver, year, card_set, character):
 
     return df_e_f2
 
-def display_results(df):
-    results_window = tk.Toplevel(root)
-    results_window.title("Search Results")
-
-    tree = ttk.Treeview(results_window, columns=("Title", "Price", "URL"), show="headings")
-    tree.column("Title", minwidth=0, width=300)
-    tree.column("Price", minwidth=0, width=100)
-    tree.column("URL", minwidth=0, width=300)
-
-    tree.heading("Title", text="Title")
-    tree.heading("Price", text="Price")
-    tree.heading("URL", text="URL")
-
+    global tree
+    tree.delete(*tree.get_children())
     for index, row in df.iterrows():
-        tree.insert("", "end", values=(row["Title"], row["Price"], row["URL"]))
-
-    tree.pack()
-
-    save_button = ttk.Button(results_window, text="Save Results", command=lambda: save_results(df))
-    save_button.pack()
-import os
-
-def open_url(event, tree):
-    item = tree.item(tree.focus())['values']
-    if item:
-        url = item[2]
-        webbrowser.open(url, new=1)
-
-
-def display_results(df):
-    results_window = tk.Toplevel(root)
-    results_window.title("Search Results")
-
-    tree = ttk.Treeview(results_window, columns=("Title", "Price"), show="headings")
-    tree.column("Title", minwidth=0, width=300)
-    tree.column("Price", minwidth=0, width=100)
-
-    tree.heading("Title", text="Title")
-    tree.heading("Price", text="Price")
-
-    for index, row in df.iterrows():
-        tree.insert("", "end", values=(row["Title"], row["Price"], row["URL"]))
+        tree.insert("", "end", values=(row["Title"], row["Price"]))
 
     tree.bind("<Double-1>", lambda event: open_url(event, tree))  # Bind the open_url function to a double-click event
 
-    tree.pack()
 
-    save_button = ttk.Button(results_window, text="Save Results", command=lambda: save_results(df))
-    save_button.pack()
+def open_url(event, tree):
+    selected_item_id = tree.focus()  # Get the selected item's ID
+    item = tree.item(selected_item_id)  # Get the item's information
+    values = item['values']  # Get the item's values (Title, Price, and URL)
+    
+    print("Values:", values)  # Debug print statement
 
+    if len(values) == 3:
+        url = values[2]  # Access the URL value
+        print("Opening URL:", url)  # Debug print statement
+        webbrowser.open(url)  # Open the URL in the default web browser
+
+def display_results(df):
+    global tree
+    tree.delete(*tree.get_children())
+    for index, row in df.iterrows():
+        tree.insert("", "end", values=(row["Title"], row["Price"], row["URL"]))  # Add the URL value here
 
 
 # GUI code
@@ -175,8 +151,18 @@ character_label = ttk.Label(mainframe, text="Character:")
 character_label.grid(column=1, row=3, sticky=tk.W)
 character_entry = ttk.Entry(mainframe)
 character_entry.grid(column=2, row=3, sticky=(tk.W, tk.E))
+tree = ttk.Treeview(mainframe, columns=("Title", "Price", "URL"), show="headings")
+tree.column("Title", minwidth=0, width=300)
+tree.column("Price", minwidth=0, width=100)
+tree.column("URL", minwidth=0, width=0)  # Move this line here
 
-search_button = ttk.Button(mainframe, text="Search", command=search_cards)
+tree.heading("Title", text="Title")
+tree.heading("Price", text="Price")
+tree.heading("URL", text="")
+tree.grid(column=1, row=5, columnspan=2, sticky=(tk.W, tk.E))
+
+
+search_button = ttk.Button(mainframe, text="Search", command=lambda: [tree.delete(*tree.get_children()), search_cards()])
 search_button.grid(column=2, row=4, sticky=(tk.W, tk.E))
 root.columnconfigure(0, weight=1)
 root.rowconfigure(0, weight=1)
@@ -189,5 +175,7 @@ mainframe.rowconfigure(1, weight=1)
 mainframe.rowconfigure(2, weight=1)
 mainframe.rowconfigure(3, weight=1)
 mainframe.rowconfigure(4, weight=1)
+
+tree.bind("<Double-1>", lambda event: open_url(event, tree))  # Bind the open_url function to a double-click event
 
 root.mainloop()
