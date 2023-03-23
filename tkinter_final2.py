@@ -100,6 +100,8 @@ def run_web_driver():
     df_results_all1.to_excel("marvel_cards.xlsx")
     print(df_results_all1)
 
+    wd.quit()
+
 
 import tkinter as tk
 import customtkinter
