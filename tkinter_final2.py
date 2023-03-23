@@ -55,7 +55,8 @@ def run_web_driver():
     wd.get("https://www.ebay.com/")
     wd.implicitly_wait(10)
 
-    search_field_ebay = wd.find_element(By.ID, "gh-ac").send_keys(my_search)
+    search_field_ebay = wd.find_element(By.ID, "gh-ac")
+    search_field_ebay.send_keys(my_search)
     search_button_ebay_click = wd.find_element(By.ID, "gh-btn")
     search_button_ebay_click.click()
     wd.implicitly_wait(10)
