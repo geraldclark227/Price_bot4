@@ -1,4 +1,6 @@
 import pandas as pd
+import numpy
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 def run_web_driver():
@@ -90,38 +92,31 @@ def run_web_driver():
     #df_eb_f3 = df_eb_f2.sort_values(by="Price", ascending=False)
     print(df_eb_f2)
 
-    #webdriver close
-    #wd.quit()
     wd.close()
 
+    #timestamp1 = datetime.datetime.now()
     df_results_all = pd.concat([df_a_f2, df_eb_f2], axis=0)
     df_results_all["Price"] = df_results_all["Price"].astype(float)
     df_results_all1 = df_results_all.sort_values(by="Price", ascending=False)
     df_results_all1.to_csv("marvel_cards.csv", index=False)
-    df_results_all1.to_excel("marvel_cards.xlsx")
     print(df_results_all1)
+
+    #excel writer with timestamp
+    writer1 = pd.ExcelWriter('excel_files/output_{}.xlsx'.format(datetime.now().strftime("%Y-%m-%d %H%M%S")))
+    df_results_all1.to_excel(writer1, "marvel_cards")   
 
     wd.quit()
 
 
 import tkinter as tk
-import customtkinter
 import numpy
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, messagebox      
 
-#def open_excel():
-    #my_file1 = 
-
-
-root = tk.Tk()
-root.geometry("850x400")
-root.title("Marvel Cards")
-root.pack_propagate(False)
-
-year_var = tk.StringVar()
-card_set_var = tk.StringVar()
-character_var = tk.StringVar()
-
+# def toggle_mode():
+#     if mode_switch.instate(["selected"]):
+#         style.theme_use("forest-light")
+#     else:
+#         style.theme_use("forest-dark")
 
 def submit():
     global year1
@@ -130,6 +125,9 @@ def submit():
     card_set1 = card_set_var.get()
     global character1
     character1 = character_var.get()
+    global psa_card1
+    psa_card1 = psa_spinbox.get()
+
     global my_search
     #my_search = str(year1)+" "+str(card_set1)+" "+str(character1)
     my_search = f"{year1} {card_set1} {character1}"
@@ -137,31 +135,124 @@ def submit():
     print("year: " + year1)
     print("card set: " + card_set1)
     print("character: " + character1)
+    print("PSA: " + psa_card1)
     
     year_var.set("")
     card_set_var.set("")
     character_var.set("")
 
-yr_label = tk.Label(root, text="year", font=("Helvetica", 18, "normal"))
-yr_entry = tk.Entry(root, textvariable = year_var, font=("Helvetica", 18, "normal"), width = 35)
-#yr_entry.focus_set()
-c_set_label = tk.Label(root, text="card set", font=("Helvetica", 18, "normal"))
-c_set_entry = tk.Entry(root, textvariable = card_set_var, font=("Helvetica", 18, "normal"), width = 35)
+def open_excel():
+    filetypes = ("Excel Files", ".xlsx"),("All Files", "*.*")
+    my_excel1 = filedialog.askopenfilename(title='Open excel', 
+                                           initialdir='/Users/geraldclark/Desktop/Price_bot4', 
+                                           filetypes=filetypes)
+    
+    try:
+        df_t_view = pd.read_excel(my_excel1)
+        print(df_t_view)
+    except Exception as e:
+        messagebox.showerror("Woah!", f"Must load excel spreadsheet...{e}")
 
-character_label = tk.Label(root, text="character", font=("Helvetica", 18, "normal"))
-character_entry = tk.Entry(root, textvariable = character_var, font=("Helvetica", 18, "normal"), width = 35)
+    #remove unnamed column yay
+    df_t_view2 = df_t_view.loc[:, ~df_t_view.columns.str.contains('^Unnamed')]
 
-sub_btn = tk.Button(root, text="Submit", command = submit)
-run_web_driver_btn = tk.Button(root, text="Run Webdriver", command = run_web_driver)
+    tree_view.delete(*tree_view.get_children())
 
-yr_label.grid(row=0, column=0, padx=5, pady=5)
-yr_entry.grid(row=0, column=1, padx=5, pady=5)
-c_set_label.grid(row=1, column=0, padx=5, pady=5)
-c_set_entry.grid(row=1, column=1, padx=5, pady=5)
-character_label.grid(row=3, column=0, padx=5, pady=5)
-character_entry.grid(row=3, column=1, padx=5, pady=5)
-sub_btn.grid(row=4, column=1, padx=5, pady=5)
-run_web_driver_btn.grid(row=5, column=1, padx=5, pady=5)
+    tree_view['column'] = list(df_t_view2.columns)
+    tree_view['show'] = 'headings'
+
+    for tree_col in tree_view['column']:
+        tree_view.heading(tree_col, text=tree_col)
+
+    df_t_rows = df_t_view2.to_numpy().tolist()
+    for r in df_t_rows:
+        tree_view.insert("", "end", values=r)
+    #df_t_rows.bind('<Button-1>', lambda e)
+
+
+    # tree_view.column("#0", width=0, stretch=False)
+    tree_view.column("Title", anchor="w", width=150, stretch=True)
+    # tree_view.column("Price", width=25, stretch=True)
+    # tree_view.column("URL", width=150, stretch=True)
+
+
+root = tk.Tk()
+style = ttk.Style(root)
+# style.configure("Treeview", 
+#         rowheight=20,
+#         font="Helvetica",
+#         fontsize=20,        
+#         background="white",
+#         foreground="black")
+
+root.tk.call("source", "forest-light.tcl")
+root.tk.call("source", "forest-dark.tcl")
+#style.theme_use("forest-dark")
+
+root.geometry("1500x400")
+root.title("Marvel Cards")
+#root.pack_propagate(False)
+
+frame1  = ttk.Frame(root)
+frame1.grid(row=0, column=0, padx=20, pady=10)
+
+widgets_frame = ttk.LabelFrame(frame1, text="Enter Data")
+widgets_frame.grid(row=0, column=0, padx=10, pady=10)
+
+year_var = tk.StringVar()
+card_set_var = tk.StringVar()
+character_var = tk.StringVar()
+psa_card_var = tk.StringVar()
+                              
+#year entry
+yr_entry = ttk.Entry(widgets_frame, textvariable = year_var, font=("Helvetica", 16))
+yr_entry.insert(0, "year")
+yr_entry.bind("<FocusIn>", lambda a: yr_entry.delete("0", "end"))
+yr_entry.grid(row=0, column=0, padx=5, pady=(0, 5), sticky="ew")
+
+#card set entry
+c_set_entry = ttk.Entry(widgets_frame, textvariable = card_set_var, font=("Helvetica", 16))
+c_set_entry.insert(0, "card set")
+c_set_entry.bind("<FocusIn>", lambda b: c_set_entry.delete("0", "end"))
+c_set_entry.grid(row=1, column=0, padx=5, pady=(0, 5), sticky="ew")
+
+#character entry
+character_entry = ttk.Entry(widgets_frame, textvariable = character_var, font=("Helvetica", 16))
+character_entry.insert(0, "character")
+character_entry.bind("<FocusIn>", lambda c: character_entry.delete("0", "end"))
+character_entry.grid(row=2, column=0, padx=5, pady=(0, 5), sticky="ew")
+
+#PSA spin_box
+psa_spinbox = ttk.Spinbox(widgets_frame, from_=0, to=10, font=("Helvetica", 14))
+psa_spinbox.insert(0, "PSA")
+psa_spinbox.bind("<FocusIn>", lambda d: psa_spinbox.delete("0", "end"))
+psa_spinbox.grid(row=3, column=0, sticky="ew")
+
+#enter data
+sub_btn = ttk.Button(widgets_frame, text="Submit data", command = submit)
+sub_btn.grid(row=4, column=0, padx=5, pady=5, sticky="ew")
+
+#run driver
+run_web_driver_btn = ttk.Button(widgets_frame, text="Run driver", command = run_web_driver)
+run_web_driver_btn.grid(row=5, column=0, padx=5, pady=5, sticky="ew")
+
+#open excel
+excel_btn = ttk.Button(widgets_frame, text="Open Excel File", command=open_excel)
+excel_btn.grid(row=6, column=0, padx=5, pady=5, sticky="ew")
+
+#separator
+separator = ttk.Separator(widgets_frame)
+separator.grid(row=7, column=0, padx=(20,10), pady=10, sticky="ew")
+
+# #mode toggle, light and dark modes
+# mode_switch = ttk.Checkbutton(
+#         widgets_frame, text="Mode", style="Switch", command=toggle_mode)
+# mode_switch.grid(row=8, column=0, padx=5, pady=10, sticky="ew")
+
+#treeview
+tree_view = ttk.Treeview(frame1, show="headings")
+tree_view.grid(row=0, column=1, padx=10, pady=10)
+
 
 #tkinter mainloop
 root.mainloop()
