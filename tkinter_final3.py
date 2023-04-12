@@ -176,17 +176,18 @@ def clear_tree_view():
 
 def open_excel():
     #filetypes = ("Excel Files", ".xlsx"),("All Files", "*.*")
-    my_excel1 = filedialog.askopenfilename(title='Open excel', 
-                                           initialdir='/Users/geraldclark/Desktop/Price_bot4', 
-                                           filetypes=(("Excel Files", ".xlsx"),("All Files", "*.*")))
-    
-    try:
-        df_t_view = pd.read_excel(my_excel1)
-        print(df_t_view)
-    except Exception as e:
-        messagebox.showerror("!", f"Must load excel spreadsheet...{e}")
+    my_excel1 = filedialog.askopenfilename(initialdir='\\Users\\geraldclark\\Desktop\\Price_bot4',
+                                           title='Open excel',
+                                           filetypes=(("Excel Files", "*.xlsx"),("All Files", "*.*")))
+    if my_excel1:
+        try:
+            my_excel1 = r"{}".format(my_excel1)
+            df_t_view = pd.read_excel(my_excel1)
+            print(df_t_view)
+        except Exception as e:
+            messagebox.showerror("!", f'Must load excel spreadsheet...{e}')
 
-    #remove unnamed column yup
+    #remove unnamed column
     df_t_view2 = df_t_view.loc[:, ~df_t_view.columns.str.contains('^Unnamed')]
 
     clear_tree_view()
@@ -247,7 +248,7 @@ yr_entry = ttk.Entry(widgets_frame, textvariable = year_var, font=("Helvetica", 
 yr_entry.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
 #card set entry
-c_set_entry = ttk.Entry(widgets_frame, text="", textvariable = card_set_var, font=("Helvetica", 16))
+c_set_entry = ttk.Entry(widgets_frame, textvariable = card_set_var, font=("Helvetica", 16))
 c_set_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
 #character entry
