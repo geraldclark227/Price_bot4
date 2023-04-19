@@ -1,6 +1,6 @@
 * Overview
 
-Marvel Card Finder is a simple, user-friendly Python application built with Tkinter that helps users search for Marvel trading cards across Amazon and eBay. It aims to provide a convenient interface for users to find the best deals and manage their collection.
+Our Card Finder is a simple, user-friendly Python application built with Tkinter that helps users search for  trading cards across Amazon, eBay, Beckett Marketplace, and PSAcard.covering varios card types, including sports, anime, and comics  It aims to provide a convenient interface for users to find the best deals and manage their collection.
 
 * Requirements
 - Python 3.7 or later
@@ -38,5 +38,7 @@ Third-party libraries used:
 - [Selenium](https://selenium-python.readthedocs.io/)
 - [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
 - [Pandas](https://pandas.pydata.org/)
+
+
 
 
