@@ -1,43 +1,38 @@
 * Overview
+   Our cards bot app help collectors and enthusiasts easily search and compare prices for Marvel trading cards across multiple online platforms,      including Beckett    Marketplace, Amazon, and eBay. The tool uses Python, web scraping, and the Tkinter library to create an efficient and user-friendly experience.
 
-Our Card Finder is a simple, user-friendly Python application built with Tkinter that helps users search for  trading cards across Amazon, eBay, Beckett Marketplace, and PSAcard.covering varios card types, including sports, anime, and comics  It aims to provide a convenient interface for users to find the best deals and manage their collection.
+* Features
+  -Search for Marvel trading cards based on the year, card set, character, and PSA grade
+  -Scrape and extract relevant information, such as title, price, and URL, from search results on Beckett Marketplace, Amazon, and eBay
+  -Store the extracted information in a DataFrame and export it to CSV and Excel files
+  -Display the search results in a Tkinter GUI, allowing users to interact with the data and open product URLs directly from the application
+   
+* Dependencies
+  - Python
+  - Pandas
+  - NumPy
+  - Beautiful Soup
+  - Selenium
+  - Requests
+  - Tkinter
+   
+* Usage
+  -Input the desired search parameters, such as the year, card set, character, and PSA grade, into the Tkinter GUI.
+  -Click the "Submit" button to begin the search.
+  -The tool will scrape the search results from Beckett Marketplace, Amazon, and eBay, and store the extracted information in a DataFrame.
+  -The DataFrame will be exported to a CSV and Excel file, and the search results will be displayed in the Tkinter GUI.
+  -Users can interact with the data by double-clicking on a row in the search results to open the corresponding product URL in a web browser.
+   
+* Limitations
+  -The tool is currently limited to searching for trading cards on Beckett Marketplace, Amazon, and eBay.
+  -It may not work properly if the websites' structure or design changes, which may require updating the web scraping logic.
+  -The tool is dependent on the availability of the websites being scraped and may not function if the websites are down or inaccessible.
 
-* Requirements
-- Python 3.7 or later
-- Tkinter
-- Selenium
-- Beautiful Soup
-- Pandas
-
-* Setup
-1. Clone the code 
-2. open the code using anaconda jupyterlab or visual studio.
-3. Install required Python packages.
-4. Download the suitable [ChromeDriver](https://sites.google.com/a/chromium.org/chromedriver/downloads) for your system and place it in the project folder.
-5. run the code.
-
-6. Input card details such as year, card set, character, and PSA grade.
-
-7. Click "Search" to find cards on Amazon and eBay.
-
-4. Browse the results and select your preferred cards.
-
-* Components
-
-1. def run_web_driver():
-    * a function that handles web scraping 
-2. def search_cards():
-    * a function that handles the 
-3. GUI Tkinter 
-    * used for creating the interface 
-
-
-Third-party libraries used:
-
-- [Tkinter](https://docs.python.org/3/library/tkinter.html)
-- [Selenium](https://selenium-python.readthedocs.io/)
-- [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
-- [Pandas](https://pandas.pydata.org/)
+* Third-party libraries used:
+  - [Tkinter](https://docs.python.org/3/library/tkinter.html)
+  - [Selenium](https://selenium-python.readthedocs.io/)
+  - [Beautiful Soup](https://www.crummy.com/software/BeautifulSoup/)
+  - [Pandas](https://pandas.pydata.org/)
 
 
 
