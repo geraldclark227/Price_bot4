@@ -21,17 +21,17 @@
    
 * Usage
 
-  -Input the desired search parameters, such as the year, card set, character, and PSA grade, into the Tkinter GUI.
-  -Click the "Submit" button to begin the search.
-  -The tool will scrape the search results from Beckett Marketplace, Amazon, and eBay, and store the extracted information in a DataFrame.
-  -The DataFrame will be exported to a CSV and Excel file, and the search results will be displayed in the Tkinter GUI.
-  -Users can interact with the data by double-clicking on a row in the search results to open the corresponding product URL in a web browser.
+  - Input the desired search parameters, such as the year, card set, character, and PSA grade, into the Tkinter GUI.
+  - Click the "Submit" button to begin the search.
+  - The tool will scrape the search results from Beckett Marketplace, Amazon, and eBay, and store the extracted information in a DataFrame.
+  - The DataFrame will be exported to a CSV and Excel file, and the search results will be displayed in the Tkinter GUI.
+  - Users can interact with the data by double-clicking on a row in the search results to open the corresponding product URL in a web browser.
    
 * Limitations
 
-  -The tool is currently limited to searching for trading cards on Beckett Marketplace, Amazon, and eBay.
-  -It may not work properly if the websites' structure or design changes, which may require updating the web scraping logic.
-  -The tool is dependent on the availability of the websites being scraped and may not function if the websites are down or inaccessible.
+  - The tool is currently limited to searching for trading cards on Beckett Marketplace, Amazon, and eBay.
+  - It may not work properly if the websites' structure or design changes, which may require updating the web scraping logic.
+  - The tool is dependent on the availability of the websites being scraped and may not function if the websites are down or inaccessible.
 
 * Third-party libraries used:
 
