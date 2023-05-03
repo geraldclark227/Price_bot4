@@ -4,10 +4,10 @@
 
 * Features
 
-  -Search for Marvel trading cards based on the year, card set, character, and PSA grade
-  -Scrape and extract relevant information, such as title, price, and URL, from search results on Beckett Marketplace, Amazon, and eBay
-  -Store the extracted information in a DataFrame and export it to CSV and Excel files
-  -Display the search results in a Tkinter GUI, allowing users to interact with the data and open product URLs directly from the application
+  - Search for trading cards based on the year, card set, character, and PSA grade.
+  - Scrape and extract relevant information, such as title, price, and URL, from search results on Beckett Marketplace, Amazon, and eBay.
+  - Store the extracted information in a DataFrame and export it to CSV and Excel files.
+  - Display the search results in a Tkinter GUI, allowing users to interact with the data and open product URLs directly from the application.
    
 * Dependencies
 
